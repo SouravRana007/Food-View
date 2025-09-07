@@ -1,6 +1,9 @@
 import { Router } from "express";
-import { createFood } from "../controllers/food.controller.js";
-import { authFoodPartnerMiddleware } from "../middlewares/auth.middleware.js";
+import { createFood, getFoodItem } from "../controllers/food.controller.js";
+import {
+  authFoodPartnerMiddleware,
+  authUserMiddleware,
+} from "../middlewares/auth.middleware.js";
 import multer, { memoryStorage } from "multer";
 
 const upload = multer({
@@ -10,5 +13,6 @@ const upload = multer({
 const router = Router();
 // Post /api/food/  protected[] only foodpartner can add food items
 router.post("/", authFoodPartnerMiddleware, upload.single("video"), createFood);
+router.get("/", authUserMiddleware, getFoodItem);
 
 export default router;

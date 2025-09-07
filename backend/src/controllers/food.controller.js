@@ -28,3 +28,20 @@ export const createFood = async (req, res) => {
     });
   }
 };
+
+export const getFoodItem = async (req, res) => {
+  try {
+    const foodItems = await foodItemModel.find({});
+    res.status(200).json({
+      message: "Food Items fetched successfully",
+      foodItems,
+    });
+  } catch (error) {
+    console.error("Error fetching food items:", error.message);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch food items",
+      error: error.message,
+    });
+  }
+};
