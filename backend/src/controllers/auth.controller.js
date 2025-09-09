@@ -88,7 +88,7 @@ export const Logout = (req, res) => {
 // Controllers for Food Partners
 export const registerFoodPartner = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, contactName, phone, address } = req.body;
     const existingFoodPartner = await foodPartnerModel.findOne({ email });
     if (existingFoodPartner) {
       return res.status(400).json({
@@ -98,6 +98,9 @@ export const registerFoodPartner = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     const foodPartner = await foodPartnerModel.create({
       name,
+      contactName,
+      phone,
+      address,
       email,
       password: hashedPassword,
     });
@@ -114,6 +117,9 @@ export const registerFoodPartner = async (req, res) => {
         _id: foodPartner._id,
         name: foodPartner.name,
         email: foodPartner.email,
+        contactName: foodPartner.contactName,
+        phone: foodPartner.phone,
+        address: foodPartner.address,
       },
     });
   } catch (error) {
@@ -152,7 +158,10 @@ export const loginFoodPartner = async (req, res) => {
       foodPartner: {
         _id: foodPartner._id,
         name: foodPartner.name,
+        contactName: foodPartner.contactName,
         email: foodPartner.email,
+        phone: foodPartner.phone,
+        address: foodPartner.address,
       },
     });
   } catch (error) {
