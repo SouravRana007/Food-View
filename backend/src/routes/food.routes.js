@@ -14,5 +14,6 @@ const router = Router();
 // Post /api/food/  protected[] only foodpartner can add food items
 router.post("/", authFoodPartnerMiddleware, upload.single("video"), createFood);
 router.get("/", authUserMiddleware, getFoodItem);
+router.get("/food-partner/:id", authUserMiddleware);
 
 export default router;

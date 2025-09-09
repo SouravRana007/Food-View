@@ -83,7 +83,7 @@ export default function Home() {
             <p className="text-sm mb-2 line-clamp-2">{video.description}</p>
             <button
               className="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-full font-semibold transition"
-              onClick={() => handleVisitStore(video._id)}
+              onClick={() => handleVisitStore(video.foodPartner)}
             >
               Visit Store
             </button>
