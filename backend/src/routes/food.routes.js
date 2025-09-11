@@ -1,5 +1,9 @@
 import { Router } from "express";
-import { createFood, getFoodItem } from "../controllers/food.controller.js";
+import {
+  createFood,
+  getFoodItem,
+  likeFoodItem,
+} from "../controllers/food.controller.js";
 import {
   authFoodPartnerMiddleware,
   authUserMiddleware,
@@ -15,5 +19,8 @@ const router = Router();
 router.post("/", authFoodPartnerMiddleware, upload.single("video"), createFood);
 router.get("/", authUserMiddleware, getFoodItem);
 router.get("/food-partner/:id", authUserMiddleware);
+
+router.post("/like", authUserMiddleware, likeFoodItem);
+router.post("/save", authUserMiddleware saveFoodItem)
 
 export default router;

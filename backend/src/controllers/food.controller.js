@@ -1,7 +1,8 @@
 import { foodItemModel } from "../models/food.model.js";
 import { uploadFile } from "../services/storage.service.js";
 import { v4 as uuid } from "uuid";
-
+import { likeModel } from "../models/likes.model.js";
+import { saveModel } from "../models/save.model.js";
 export const createFood = async (req, res) => {
   try {
     // Upload file to ImageKit
@@ -44,4 +45,40 @@ export const getFoodItem = async (req, res) => {
       error: error.message,
     });
   }
+};
+
+export const likeFoodItem = async (req, res) => {
+  const { foodId } = req.body;
+  const { user } = req.user._id;
+  const isFoodLiked = await likeModel.findOne({ user: user._id, food: foodId });
+  if (isFoodLiked) {
+    await likeFoodItem.deleteOne({ user: user._id, food: foodId });
+    await foodItemModel.findByIdAndUpdate(foodId, { $inc: { likeCount: -1 } });
+    return res.status(200).json({
+      message: "Food item unliked",
+    });
+  }
+  const like = await likeModel.create({ user: user._id, food: foodId });
+  await foodItemModel.findByIdAndUpdate(foodId, { $inc: { likeCount: 1 } });
+  return res.status(201).json({
+    message: "Food item liked",
+    like,
+  });
+};
+
+export const saveFoodItem = async (req, res) => {
+  const { foodId } = req.body;
+  const { user } = req.user._id;
+  const isFoodSaved = await saveModel.findOne({ user: user._id, food: foodId });
+  if (isFoodSaved) {
+    await saveModel.deleteOne({ user: user._id, food: foodId });
+    return res.status(200).json({
+      message: "Food item unsaved",
+    });
+  }
+  const save = await saveModel.create({ user: user._id, food: foodId });
+  return res.status(201).json({
+    message: "Food item saved",
+    save,
+  });
 };
