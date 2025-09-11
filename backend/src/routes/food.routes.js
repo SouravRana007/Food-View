@@ -3,6 +3,7 @@ import {
   createFood,
   getFoodItem,
   likeFoodItem,
+  saveFoodItem,
 } from "../controllers/food.controller.js";
 import {
   authFoodPartnerMiddleware,
@@ -21,6 +22,6 @@ router.get("/", authUserMiddleware, getFoodItem);
 router.get("/food-partner/:id", authUserMiddleware);
 
 router.post("/like", authUserMiddleware, likeFoodItem);
-router.post("/save", authUserMiddleware saveFoodItem)
+router.post("/save", authUserMiddleware, saveFoodItem);
 
 export default router;
