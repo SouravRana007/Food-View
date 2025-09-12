@@ -40,14 +40,13 @@ export default function CreateFood() {
       data.append("description", formData.description);
       formData.videos.forEach((file) => data.append("video", file));
 
-      const res = await axios.post("http://localhost:3000/api/food", data, {
+      await axios.post("http://localhost:3000/api/food", data, {
         withCredentials: true,
         headers: { "Content-Type": "multipart/form-data" },
         onUploadProgress: (progressEvent) => {
           Math.round((progressEvent.loaded * 100) / progressEvent.total);
         },
       });
-      console.log(res.data);
       toast.success("Food Item Created Successfully!", {
         position: "top-center",
         autoClose: 2000,

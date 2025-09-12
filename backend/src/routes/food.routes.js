@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   createFood,
   getFoodItem,
+  getSavedFoodItem,
   likeFoodItem,
   saveFoodItem,
 } from "../controllers/food.controller.js";
@@ -23,5 +24,6 @@ router.get("/food-partner/:id", authUserMiddleware);
 
 router.post("/like", authUserMiddleware, likeFoodItem);
 router.post("/save", authUserMiddleware, saveFoodItem);
+router.get("/save", authUserMiddleware, getSavedFoodItem);
 
 export default router;

@@ -17,6 +17,14 @@ const foodItemSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "foodpartner",
     },
+    likeCount: {
+      type: Number,
+      default: 0,
+    },
+    savesCount: {
+      type: Number,
+      default: 0,
+    },
   },
   { timestamps: true }
 );

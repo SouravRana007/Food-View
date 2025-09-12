@@ -8,8 +8,6 @@ export default function Home() {
   const containerRef = useRef(null);
   const [videos, setVideos] = useState([]);
   const videoRefs = useRef([]);
-  const [likes, setLikes] = useState({});
-  const [saves, setSaves] = useState({});
   const [comments, setComments] = useState({});
 
   // Fetch videos from backend
@@ -58,23 +56,49 @@ export default function Home() {
   };
 
   // Like, Save, Comment Handlers
-  const handleLike = (id) => setLikes({ ...likes, [id]: (likes[id] || 0) + 1 });
-  const handleSave = (id) => {
-    const savedVideo = videos.find((v) => v._id === id);
-    const existingSaves = JSON.parse(localStorage.getItem("savedVideos")) || [];
-
-    // Avoid duplicates
-    const updatedSaves = [
-      ...existingSaves.filter((v) => v._id !== id),
-      savedVideo,
-    ];
-    localStorage.setItem("savedVideos", JSON.stringify(updatedSaves));
-
-    setSaves({ ...saves, [id]: (saves[id] || 0) + 1 });
-  };
+  // const handleLike = (id) => setLikes({ ...likes, [id]: (likes[id] || 0) + 1 });
 
   const handleComment = (id) =>
     setComments({ ...comments, [id]: (comments[id] || 0) + 1 });
+
+  const likeVideo = async (item) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/api/food/like",
+        { foodId: item._id },
+        { withCredentials: true }
+      );
+
+      const { likeCount } = response.data;
+
+      setVideos((prev) =>
+        prev.map((v) =>
+          v._id === item._id ? { ...v, likeCount: likeCount } : v
+        )
+      );
+    } catch (error) {
+      console.error("Error liking video:", error);
+    }
+  };
+  const handleSave = async (item) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/api/food/save",
+        { foodId: item._id },
+        { withCredentials: true }
+      );
+
+      const { savesCount } = response.data;
+
+      setVideos((prev) =>
+        prev.map((v) =>
+          v._id === item._id ? { ...v, savesCount: savesCount } : v
+        )
+      );
+    } catch (error) {
+      console.error("Error saving video:", error);
+    }
+  };
 
   return (
     <div
@@ -102,18 +126,19 @@ export default function Home() {
           <div className="absolute right-4 top-1/3 flex flex-col gap-5 items-center text-white">
             <div
               className="flex flex-col items-center cursor-pointer"
-              onClick={() => handleLike(video._id)}
+              // onClick={() => handleLike(video._id)}
             >
-              <Heart className="w-10 h-10 hover:text-red-500 rounded-full bg-black/30 backdrop-blur-md py-2 flex justify-around text-white border-t border-white/10" />
-              <span className="text-xs mt-1">{likes[video._id] || 0}</span>
+              <button onClick={() => likeVideo(video)}>
+                <Heart className="w-10 h-10 hover:text-red-500 rounded-full bg-black/30 backdrop-blur-md py-2 flex justify-around text-white border-t border-white/10" />
+                <span className="text-xs mt-1">{video.likeCount ?? 0}</span>
+              </button>
             </div>
 
-            <div
-              className="flex flex-col items-center cursor-pointer"
-              onClick={() => handleSave(video._id)}
-            >
-              <Bookmark className="w-10 h-10 hover:text-yellow-500 rounded-full bg-black/30 backdrop-blur-md py-2 flex justify-around text-white border-t border-white/10" />
-              <span className="text-xs mt-1">{saves[video._id] || 0}</span>
+            <div className="flex flex-col items-center cursor-pointer">
+              <button onClick={() => handleSave(video)}>
+                <Bookmark className="w-10 h-10 hover:text-yellow-500 rounded-full bg-black/30 backdrop-blur-md py-2 flex justify-around text-white border-t border-white/10" />
+                <span className="text-xs mt-1">{video.savesCount ?? 0}</span>
+              </button>
             </div>
 
             <div

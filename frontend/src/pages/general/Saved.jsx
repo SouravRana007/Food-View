@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useRef, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -9,8 +10,32 @@ export default function Saved() {
 
   // Load saved videos from localStorage
   useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem("savedVideos")) || [];
-    setSavedVideos(saved);
+    const fetchSaved = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:3000/api/food/save",
+          {
+            withCredentials: true,
+          }
+        );
+
+        const savedFoods = (response.data.savedFood || []).map((item) => ({
+          _id: item._id,
+          video: item.video,
+          description: item.description,
+          likeCount: item.likeCount || 0,
+          savesCount: item.savesCount || 0,
+          commentsCount: item.commentsCount || 0,
+          foodPartner: item.foodPartner || "",
+        }));
+
+        setSavedVideos(savedFoods);
+      } catch (error) {
+        console.error("Error fetching saved videos:", error);
+      }
+    };
+
+    fetchSaved();
   }, []);
 
   // Intersection Observer for autoplay

@@ -13,14 +13,9 @@ export default function UserRegister() {
   const handleRegister = async (e) => {
     e.preventDefault();
     // handle registration logic here
-    const res = await axios.post(
-      "http://localhost:3000/api/auth/user/register",
-      formData,
-      {
-        withCredentials: true,
-      }
-    );
-    console.log(res.data);
+    await axios.post("http://localhost:3000/api/auth/user/register", formData, {
+      withCredentials: true,
+    });
     navigate("/");
   };
   return (

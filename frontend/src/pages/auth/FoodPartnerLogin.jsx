@@ -9,12 +9,11 @@ export default function FoodPartnerLogin() {
   const [password, SetPassword] = useState("");
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const res = await axios.post(
+    await axios.post(
       "http://localhost:3000/api/auth/food-partner/login",
       { email, password },
       { withCredentials: true }
     );
-    console.log(res.data);
     navigate("/create-food");
   };
   return (

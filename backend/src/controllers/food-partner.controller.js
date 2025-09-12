@@ -1,7 +1,6 @@
 import { foodPartnerModel } from "../models/foodpartner.model.js";
 import { foodItemModel } from "../models/food.model.js";
 export const getFoodPartnerById = async (req, res) => {
-  // console.log("Incoming ID:", req.params.id);
   const foodPartnerId = req.params.id;
   try {
     const foodPartner = await foodPartnerModel.findById(foodPartnerId);

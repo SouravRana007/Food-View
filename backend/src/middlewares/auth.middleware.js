@@ -22,20 +22,27 @@ export const authFoodPartnerMiddleware = async (req, res, next) => {
 };
 
 export const authUserMiddleware = async (req, res, next) => {
-  const token = req.cookies.token;
-  if (!token) {
-    return res.status(401).json({
-      message: "Unauthorised Acess ,Please Login First",
-    });
-  }
   try {
+    const token = req.cookies?.token;
+    if (!token) {
+      return res
+        .status(401)
+        .json({ message: "Unauthorized. Please login first." });
+    }
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    if (!decoded?.id) {
+      return res.status(401).json({ message: "Invalid token" });
+    }
+
     const user = await userModel.findById(decoded.id);
+    if (!user) {
+      return res.status(401).json({ message: "User not found or deleted" });
+    }
+
     req.user = user;
     next();
-  } catch (error) {
-    return res.status(401).json({
-      message: "Invalid or expired token",
-    });
+  } catch (err) {
+    console.error("Auth Middleware Error:", err.message);
+    return res.status(401).json({ message: "Invalid or expired token" });
   }
 };
